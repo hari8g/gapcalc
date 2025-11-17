@@ -1,0 +1,1398 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Region IN - D.OS Business equations & Tier Monte Carlo (Enhanced)</title>
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin:14px; background:#f6f8fb; }
+    .layout { display:grid; grid-template-columns:420px 1fr; gap:12px; align-items:start; }
+    .panel { background:#fff; padding:12px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.06); max-height:88vh; overflow:auto; }
+    label { display:block; font-size:13px; margin-bottom:4px; }
+    input[type=number], input[type=text] { width:100%; padding:6px; border-radius:6px; border:1px solid #ddd; margin-bottom:8px; }
+    .btn { background:#2563eb; color:#fff; padding:8px 12px; border-radius:8px; border:none; cursor:pointer; }
+    .kpi { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+    .kpi-card { min-width:160px; background:#fff; padding:10px; border-radius:8px; box-shadow:0 1px 6px rgba(0,0,0,0.06); text-align:center; }
+    .charts { display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:12px; }
+    .wide { grid-column: 1 / span 2; }
+    #debug { white-space:pre-wrap; font-family:monospace; background:#0b1220; color:#fff; padding:8px; border-radius:6px; max-height:200px; overflow:auto; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th, td { text-align:left; padding:6px; border-bottom:1px solid #eee; }
+    .muted { color:#666; font-size:12px; }
+    .big { font-weight:700; font-size:15px; }
+    .insight { background:#f8fafc; padding:10px; border-radius:6px; margin-top:8px; }
+    .tabbar { float:right; margin-top:-40px; }
+    .tabbar button { margin-left:6px; padding:6px 10px; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+    .tabcontent { display:none; padding:10px 6px; border-top:1px solid #eee; margin-top:8px; }
+    .tabcontent.active { display:block; }
+    pre.equation { background:#f4f6f8; padding:8px; border-radius:6px; overflow:auto; font-size:13px; white-space:pre-wrap; }
+    .small-muted { font-size:12px; color:#666; margin-top:6px; }
+    .download-btn { background:#10b981; color:white; padding:6px 10px; border-radius:6px; border:none; cursor:pointer; margin-right:6px; }
+    @media(max-width:1000px) { .layout { grid-template-columns:1fr; } .charts{ grid-template-columns:1fr; } .tabbar{ float:none; margin-top:8px; } }
+  </style>
+</head>
+<body>
+  <h2>Region IN - D.OS Business equations & Tier Monte Carlo (Enhanced)</h2>
+  <div class="layout">
+    <div class="panel">
+      <div style="font-weight:700;margin-bottom:8px">Inputs (edit & Update)</div>
+      <script> const DEFAULTS = {
+  "exit_arr_2025": 4200000,
+  "target_arr_2026": 6500000,
+  "customers_present": 54,
+  "ICP": 1000,
+  "today_MRPU": 6364,
+  "new_customer_mrpu": 12778,
+  "reach_rate": 0.5,
+  "meeting_rate": 0.25,
+  "win_rate": 0.25,
+  "churn_rate": 0.015,
+  "expansion_rate": 0.01,
+  "upsell_rate": 0.005,
+  "infra_share": 0.95,
+  "managed_share": 0.05,
+  "vas_share": 0.0,
+  "infra_margin": 0.08,
+  "managed_margin": 0.35,
+  "vas_margin": 0.45,
+  "present_total_gm": 0.07,
+  "ltv_gross_margin": 0.07,
+  "sales_cycle_months": 3,
+  "gap_fill_mrpu": 0,
+  "contract_length_months": 12,
+  "annual_SM_spend": 300000,
+  "target_new_customers": null,
+  "LVR_monthly": 0.05,
+  "projection_months": 12,
+  "sensitivity_grid_size": 31,
+  "churn_heatmap_min": 0.0,
+  "churn_heatmap_max": 0.05,
+  "expansion_heatmap_min": 0.0,
+  "expansion_heatmap_max": 0.4,
+  "gap_target_amount": 2299999.9999999995,
+  "median_spend": 9000,
+  "outlier_max_spend": 50000,
+  "mc_iterations": 10000,
+  "lifetime_months": 36,
+  "starting_MRR": 350000,
+  "managed_upsell_min": 0.0,
+  "managed_upsell_max": 0.1,
+  "cross_sell_min": 0.0,
+  "cross_sell_max": 0.1,
+  "pop_mean_primary": 6000,
+  "pop_sd_primary": 2000,
+  "pop_frac_primary": 0.7,
+  "pop_mean_secondary": 12000,
+  "pop_sd_secondary": 3000,
+  "pop_frac_secondary": 0.25,
+  "pop_frac_outlier": 0.05,
+  "outlier_min": 30000,
+  "outlier_max": 45000,
+  "ndr_target": 1.1,
+  "apply_ndr_constraint": 0,
+  "ttfv_target_days": 30,
+  "actual_ttfv_days": 45,
+  "new_customers_target": null,
+  "tier1_mean": 30000,
+  "tier1_sd": 5000,
+  "tier2_mean": 12500,
+  "tier2_sd": 2500,
+  "tier3_mean": 6000,
+  "tier3_sd": 2000,
+  "tier_mix_step": 0.05,
+  "mc_tier_iterations": 5000,
+  "mc_single_mix_iterations": 6000,
+  "mc_tier_max_new_customers": 200,
+  "tier_N_new_min": 10,
+  "tier_N_new_max": 150,
+  "tier_N_new_step": 20,
+  "tier_contour_levels": "0.5,0.6,0.7,0.8",
+  "rank_weight_prob": 0.6,
+  "rank_weight_gm": 0.4,
+  "tier_mix_default": [
+    0.4,
+    0.3,
+    0.3
+  ]
+}; </script>
+      <div id="inputs"></div>
+
+      <div style="margin-top:8px">
+        <button class="btn" id="btnUpdate">Update</button>
+        <button class="btn" id="btnReset" style="background:#6b7280;margin-left:8px">Reset</button>
+      </div>
+
+      <hr/>
+      <div style="font-weight:700;margin-bottom:6px">Debug / Summary</div>
+      <div id="debug">Logs will appear here.</div>
+      <div class="small-muted">Tip: Monte Carlo and tier-grid may take seconds for dense grids — edit MC counts if needed.</div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div id="title_area"><strong>Business & Tier Monte Carlo outputs</strong></div>
+        <div class="tabbar">
+          <button id="tab_equations_btn">Equations</button>
+          <button id="tab_mc_btn">Monte Carlo Doc</button>
+        </div>
+      </div>
+
+      <div id="kpi_area" class="kpi"></div>
+
+      <div class="charts">
+        <div id="rev_break"></div>
+        <div id="gp_break"></div>
+
+        <div id="cac_ltc" class="wide"></div>
+
+        <div id="sensitivity_heatmap" class="wide"></div>
+
+        <div id="scenario_delta_heatmap" class="wide"></div>
+
+        <div id="vas_sensitivity" class="wide"></div>
+        <div id="vas_sensitivity_delta" class="wide"></div>
+
+        <div id="tier_heatmap" class="wide"></div>
+        <div id="tier_contours" class="wide"></div>
+        <div id="tier_rec_table" class="wide"></div>
+        <div id="tier_dist" class="wide"></div>
+
+        <div id="payback_vs_gm" class="wide"></div>
+
+        <div id="churn_arr_heatmap" class="wide"></div>
+
+        <div id="mc_gap_hist" class="wide"></div>
+
+        <div id="funnel" class="wide"></div>
+
+        <div id="pop_hist" class="wide"></div>
+      </div>
+
+      <hr/>
+      <div class="insight" id="insights_area"></div>
+
+      <div id="tab_equations" class="tabcontent">
+        <h3>Detailed Equations & Definitions</h3>
+        <pre class="equation">
+DETAILED EQUATIONS & DEFINITIONS
+
+(Full equations described here — includes ARR/MRR, Funnel, TTFV adjustments, Expansion/NDR math,
+Revenue splits normalization, Gross Profit math, CAC/LTV/Payback, VAS 'target from VAS' shortfall sensitivity,
+and Tier Monte Carlo formulas for Method B as implemented.)
+
+Key Tier Monte Carlo formulas (Method B):
+- requiredNewARR = TargetARR_2026 - PresentARR - ExpansionARR_required
+- requiredMonthlyMRPU = requiredNewARR / (12 * N_new)
+- For each Monte Carlo iteration:
+    For k = 1..N_new:
+      Tier t_k ~ Categorical(f1,f2,f3)
+      MRPU_k ~ max(0, Normal(mean_tk, sd_tk))
+    newARR_sample = sum_k MRPU_k * 12
+    totalARR_sample = PresentARR + ExpansionARR_required + newARR_sample
+    success = (totalARR_sample >= TargetARR_2026)
+  P_success = fraction(success) over iterations
+
+Enhancements:
+- N_new sensitivity sweep draws contour overlays for user-specified P(success) levels across a range of N_new.
+- Combined ranking metric = w_prob * P(success) + w_gm * normalized_overall_gm. We normalize GM to 0..1 for combination.
+- Click a recommended row to show full simulated total ARR distribution and export the raw samples as CSV/JSON.
+
+All formulas recomputed live on Update().
+        </pre>
+      </div>
+
+      <div id="tab_mc" class="tabcontent">
+        <h3>Monte Carlo — method & interpretation</h3>
+        <p class="muted">Truncated-normal per-account samples for Tier MRPU; probability reported is fraction of iterations where totalARR >= targetARR. Tier heatmap sweeps Tier1% vs Tier2% (Tier3 = 1 - Tier1 - Tier2). Use the N_new sweep (left panel) to compare contours for different numbers of new customers.</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ---------- Expose Python precomputed result ---------- */
+const PRECOMPUTED = {
+  "computed_n_new_total": 11.03115827027068,
+  "mean_at_solution": 6502702.688227155,
+  "base_arr_by_tier": [
+    3990000.0,
+    210000.0,
+    0.0
+  ],
+  "per_new_arr_by_tier_annual": [
+    360000.0,
+    150000.0,
+    72000.0
+  ],
+  "mix_used": [
+    0.4,
+    0.3,
+    0.3
+  ],
+  "target": 6500000.0,
+  "elapsed_seconds": 0.0433650016784668
+};
+console.log("PRECOMPUTED (from Python run):", PRECOMPUTED);
+
+/* ---------- DIAGNOSTIC ERROR HANDLER ---------- */
+window.onerror = function(message, source, lineno, colno, err) {
+  try {
+    const d = document.getElementById("debug");
+    const now = new Date().toISOString();
+    const txt = now + " | ERROR: " + message + "\n    at " + source + ":" + lineno + ":" + colno + "\n" + (err && err.stack ? err.stack : "") + "\n\n" + (d ? d.textContent : "");
+    if(d) d.textContent = txt;
+    console.error("DOS ERROR:", message, source, lineno, colno, err);
+  } catch(e) { console.error("Error in error handler", e); }
+  return false;
+};
+
+window.addEventListener("unhandledrejection", function(ev){
+  try {
+    const d = document.getElementById("debug");
+    const now = new Date().toISOString();
+    const msg = ev.reason && ev.reason.stack ? ev.reason.stack : (ev.reason || "Unhandled rejection");
+    if(d) d.textContent = now + " | UNHANDLED REJECTION: " + msg + "\n\n" + d.textContent;
+    console.error("Unhandled rejection:", ev.reason);
+  } catch(e) { console.error("Error in rejection handler", e); }
+});
+
+/* ---------- Utilities ---------- */
+function logDebug(msg){
+  const d=document.getElementById("debug");
+  const now=new Date().toISOString();
+  if(d) d.textContent = now + " | " + msg + "\n" + d.textContent;
+  console.log("[DOS DEBUG]", msg);
+}
+
+/* Inject input fields */
+window.addEventListener("DOMContentLoaded", () => {
+  const keys = [
+    ["exit_arr_2025","Exit ARR 2025 (EUR)"],
+    ["target_arr_2026","Target exit ARR 2026 (EUR)"],
+    ["customers_present","Number of customers present"],
+    ["ICP","ICP available"],
+    ["today_MRPU","Today's MRPU (monthly) — auto-filled (you can override)"],
+    ["new_customer_mrpu","New-customer MRPU (monthly) — auto-filled (you can override)"],
+    ["reach_rate","Reach rate (decimal)"],
+    ["meeting_rate","Meeting rate (decimal)"],
+    ["win_rate","Win rate (decimal)"],
+    ["churn_rate","Monthly churn rate (decimal)"],
+    ["expansion_rate","Expansion rate (fraction of new ARR)"],
+    ["upsell_rate","Upsell rate monthly (decimal)"],
+    ["infra_share","Infra share"],
+    ["managed_share","Managed service share"],
+    ["vas_share","VAS share"],
+    ["infra_margin","Infra margin (decimal)"],
+    ["managed_margin","Managed service margin (decimal)"],
+    ["vas_margin","VAS margin (decimal)"],
+    ["present_total_gm","Present total gross margin (decimal)"],
+    ["ltv_gross_margin","Gross margin used for LTV (decimal)"],
+    ["sales_cycle_months","Present sales cycle (months)"],
+    ["gap_fill_mrpu","Gap to fill in MRPU (monthly) — optional"],
+    ["contract_length_months","Contract length (months)"],
+    ["annual_SM_spend","Annual S&M spend (EUR)"],
+    ["target_new_customers","Target new customers (optional)"],
+    ["LVR_monthly","Lead Velocity Rate (monthly)"],
+    ["projection_months","Projection months"],
+    ["sensitivity_grid_size","Sensitivity grid size"],
+    ["churn_heatmap_min","Churn heatmap min (dec)"],
+    ["churn_heatmap_max","Churn heatmap max (dec)"],
+    ["expansion_heatmap_min","Expansion heatmap min (dec)"],
+    ["expansion_heatmap_max","Expansion heatmap max (dec)"],
+    ["gap_target_amount","Monte Carlo gap target (EUR)"],
+    ["median_spend","Median spend per account (EUR)"],
+    ["outlier_max_spend","Max outlier spend (EUR)"],
+    ["mc_iterations","Monte Carlo iterations (gap)"],
+    ["lifetime_months","Lifetime months"],
+    ["starting_MRR","Starting MRR (monthly)"],
+    ["managed_upsell_min","Managed upsell min (decimal)"],
+    ["managed_upsell_max","Managed upsell max (decimal)"],
+    ["cross_sell_min","Cross-sell min (decimal)"],
+    ["cross_sell_max","Cross-sell max (decimal)"],
+    ["pop_mean_primary","Pop mean primary"],
+    ["pop_sd_primary","Pop sd primary"],
+    ["pop_frac_primary","Pop frac primary"],
+    ["pop_mean_secondary","Pop mean secondary"],
+    ["pop_sd_secondary","Pop sd secondary"],
+    ["pop_frac_secondary","Pop frac secondary"],
+    ["pop_frac_outlier","Pop frac outlier"],
+    ["outlier_min","Outlier MRPU min"],
+    ["outlier_max","Outlier MRPU max"],
+    ["ndr_target","NDR target (1.10 == 110%)"],
+    ["apply_ndr_constraint","Apply NDR constraint? (1=yes,0=no)"],
+    ["ttfv_target_days","TTFV target days (<30)"],
+    ["actual_ttfv_days","Measured actual TTFV days"],
+    // Tier-Monte Carlo inputs
+    ["new_customers_target","New customers target (N_new) — if blank uses funnel-derived value"],
+    ["tier1_mean","Tier1 MRPU mean (monthly)"],
+    ["tier1_sd","Tier1 MRPU sd (monthly)"],
+    ["tier2_mean","Tier2 MRPU mean (monthly)"],
+    ["tier2_sd","Tier2 MRPU sd (monthly)"],
+    ["tier3_mean","Tier3 MRPU mean (monthly)"],
+    ["tier3_sd","Tier3 MRPU sd (monthly)"],
+    ["tier_mix_step","Tier mix grid step (decimal, e.g. 0.05)"],
+    ["mc_tier_iterations","Monte Carlo iterations per grid cell (tier heatmap)"],
+    ["mc_single_mix_iterations","Monte Carlo iterations for single-mix deep-dive"],
+    // N_new sweep & contour levels
+    ["tier_N_new_min","N_new sweep: min"],
+    ["tier_N_new_max","N_new sweep: max"],
+    ["tier_N_new_step","N_new sweep: step"],
+    ["tier_contour_levels","Contour levels (comma-separated decimals, e.g. 0.5,0.6)"],
+    // ranking weights
+    ["rank_weight_prob","Ranking weight — P(success)"],
+    ["rank_weight_gm","Ranking weight — overall GM (normalized)"]
+  ];
+  const div = document.getElementById("inputs");
+  keys.forEach(([k,label])=>{
+    const w=document.createElement("div"); w.style.marginBottom="6px";
+    const l=document.createElement("label"); l.textContent=label; l.htmlFor=k;
+    const input=document.createElement("input");
+    input.type = (k === "tier_contour_levels") ? "text" : "number";
+    input.step="any";
+    input.id=k;
+    input.value = (DEFAULTS[k] !== undefined) ? DEFAULTS[k] : "";
+    w.appendChild(l); w.appendChild(input); div.appendChild(w);
+  });
+});
+
+/* safe parse */
+function safeFloat(v,f=0){ const n=parseFloat(v); return isFinite(n)?n:f; }
+
+/* ---------- Core computations (single source of truth) ---------- */
+function computeCore(p){
+  // TTFV adjustments (affects win_rate & churn used below)
+  const actual_ttfv = Math.max(1, safeFloat(p.actual_ttfv_days, 45));
+  const ttfv_target = Math.max(1, safeFloat(p.ttfv_target_days, 30));
+  let win_rate_used = safeFloat(p.win_rate);
+  let churn_used = safeFloat(p.churn_rate);
+  if (actual_ttfv <= ttfv_target) {
+    win_rate_used = win_rate_used * 1.10;     // +10% relative
+    churn_used = Math.max(0, churn_used * 0.90); // −10% relative
+  } else {
+    const factor = Math.min(0.5, (actual_ttfv - ttfv_target)/ttfv_target); // cap penalty
+    win_rate_used = win_rate_used * (1 - 0.5*factor);
+    churn_used = churn_used * (1 + 0.5*factor);
+  }
+
+  // AUTO-CALCULATE MRPU values from exit/target and counts (funnel-aware)
+  const MRPU = safeFloat(p.today_MRPU) || (safeFloat(p.exit_arr_2025) / (12 * Math.max(1, safeFloat(p.customers_present))));
+  const expected_wins = Math.max(0, Math.floor(safeFloat(p.ICP) * safeFloat(p.reach_rate) * safeFloat(p.meeting_rate) * win_rate_used));
+  const denom_for_new = expected_wins > 0 ? expected_wins : Math.max(1, Math.round(safeFloat(p.ICP)));
+  const newMRPU = safeFloat(p.new_customer_mrpu) || ((safeFloat(p.target_arr_2026) - safeFloat(p.exit_arr_2025)) / (12 * denom_for_new));
+
+  const contract_len = Math.max(1, Math.round(safeFloat(p.contract_length_months,12)));
+  const ACV_existing = MRPU * contract_len;
+  const ACV_new = newMRPU * contract_len;
+
+  // new_customers from sales funnel (unless override)
+  let sales_new_customers = null;
+  if (p.target_new_customers && !isNaN(p.target_new_customers) && p.target_new_customers>0) {
+    sales_new_customers = Math.round(p.target_new_customers);
+  } else {
+    sales_new_customers = Math.round( safeFloat(p.ICP) * safeFloat(p.reach_rate) * safeFloat(p.meeting_rate) * win_rate_used );
+  }
+
+  // If user provided explicit "new_customers_target" use it for Tier Monte Carlo; otherwise leave null
+  const explicit_new_customers_target = (p.new_customers_target && !isNaN(p.new_customers_target) && p.new_customers_target>0) ? Math.round(p.new_customers_target) : null;
+
+  const present_customers = Math.round(safeFloat(p.customers_present));
+  const presentARR = present_customers * ACV_existing;
+
+  // Business-level explicit target logic
+  const exitARR2025 = safeFloat(p.exit_arr_2025);
+  const exitMRR2025 = exitARR2025 / 12.0;
+  const targetARR2026 = safeFloat(p.target_arr_2026);
+  const targetMRR2026 = targetARR2026 / 12.0;
+  const gapMRR = targetMRR2026 - exitMRR2025;
+  const gapARR = gapMRR * 12.0;
+  const required_new_customers_for_gap = Math.ceil(gapMRR / (newMRPU || 1));
+
+  // New ARR uses new-customer ACV (newMRPU)
+  const newARR_from_sales = sales_new_customers * ACV_new;
+
+  // Expansion: compute both 'current' expansion and 'required to hit NDR'
+  const expansionARR_current = newARR_from_sales * safeFloat(p.expansion_rate);
+  // NDR math
+  const ndr_target = safeFloat(p.ndr_target, 1.10);
+  const annual_retention = Math.pow(1 - churn_used, 12);
+  const required_annual_expansion_frac = Math.max(0, ndr_target - annual_retention);
+  const expansionARR_required = presentARR * required_annual_expansion_frac; // euros per year
+
+  // Choose whether to force expansion to meet NDR target or keep current logic
+  const apply_ndr = safeFloat(p.apply_ndr_constraint, 0) === 1;
+  const expansionARR = apply_ndr ? expansionARR_required : expansionARR_current;
+
+  const totalARR_2026 = presentARR + newARR_from_sales + expansionARR;
+
+  // revenue splits (normalize)
+  let infra_share = safeFloat(p.infra_share), managed_share = safeFloat(p.managed_share), vas_share = safeFloat(p.vas_share);
+  const sumShare = infra_share + managed_share + vas_share;
+  if (sumShare>0){ infra_share/=sumShare; managed_share/=sumShare; vas_share/=sumShare; } else { infra_share=0.95; managed_share=0.05; vas_share=0.0; }
+
+  const infra_rev = totalARR_2026 * infra_share;
+  const managed_rev = totalARR_2026 * managed_share;
+  const vas_rev = totalARR_2026 * vas_share;
+
+  const gp_infra = infra_rev * safeFloat(p.infra_margin);
+  const gp_managed = managed_rev * safeFloat(p.managed_margin);
+  const gp_vas = vas_rev * safeFloat(p.vas_margin);
+  const total_gp = gp_infra + gp_managed + gp_vas;
+  const overall_gm_2026 = totalARR_2026>0 ? total_gp/totalARR_2026 : 0;
+
+  // CAC
+  const SM = safeFloat(p.annual_SM_spend);
+  const base_cac = sales_new_customers>0 ? SM/sales_new_customers : NaN;
+  const time_adj = base_cac * (1 + safeFloat(p.sales_cycle_months)/12);
+  const lvr = safeFloat(p.LVR_monthly, 0);
+  const velocity_adj = isFinite(time_adj) ? time_adj / (1 + lvr) : NaN;
+
+  // LTV (correct formula) and payback
+  const lifetime_months = Math.max(1, Math.round(safeFloat(p.lifetime_months,36)));
+  const ltv_gm = safeFloat(p.ltv_gross_margin, safeFloat(p.present_total_gm, 0.07));
+
+  const monthly_gp_per_customer_today = MRPU * ltv_gm;
+  const monthly_gp_per_customer_new = newMRPU * ltv_gm;
+
+  const LTV_today = monthly_gp_per_customer_today * lifetime_months;
+  const LTV_new = monthly_gp_per_customer_new * lifetime_months;
+  const LTV_to_CAC_today = isFinite(velocity_adj) && velocity_adj>0 ? LTV_today/velocity_adj : NaN;
+  const LTV_to_CAC_new = isFinite(velocity_adj) && velocity_adj>0 ? LTV_new/velocity_adj : NaN;
+  const payback_months = (newMRPU * ltv_gm) > 0 ? (isFinite(velocity_adj) ? (velocity_adj / (newMRPU * ltv_gm)) : NaN) : NaN;
+
+  // Monthly equivalents for NDR gap
+  const required_monthly_expansion = expansionARR_required / 12.0;
+
+  // --- NEW: focus required expansion per NEW customer (opportunity beyond cloud resale)
+  const required_expansion_per_new_customer_monthly = sales_new_customers > 0 ? (required_monthly_expansion / sales_new_customers) : NaN;
+  const opportunity_beyond_cloud_resale_annual = expansionARR_required;
+  const opportunity_beyond_cloud_resale_per_new_customer_annual = sales_new_customers > 0 ? (opportunity_beyond_cloud_resale_annual / sales_new_customers) : NaN;
+  const required_expansion_per_existing_customer_monthly = present_customers > 0 ? required_monthly_expansion / present_customers : NaN;
+
+  // gap_to_target after model (positive => unmet)
+  const gap_to_target = targetARR2026 - totalARR_2026;
+
+  return {
+    // ACVs & counts
+    ACV_existing, ACV_new,
+    sales_new_customers,
+    present_customers,
+    presentARR,
+    newARR_from_sales,
+    expansionARR_current,
+    expansionARR_required,
+    expansionARR,
+    totalARR_2026,
+
+    // revenue & GP
+    infra_rev, managed_rev, vas_rev,
+    gp_infra, gp_managed, gp_vas, total_gp, overall_gm_2026,
+
+    // CAC variants
+    base_cac, time_adj, velocity_adj,
+
+    // monthly gp and LTV/payback
+    monthly_gp_per_customer_today, monthly_gp_per_customer_new,
+    LTV_today, LTV_new, LTV_to_CAC_today, LTV_to_CAC_new, payback_months,
+
+    // explicit target values
+    exitARR2025, exitMRR2025, targetARR2026, targetMRR2026, gapMRR, gapARR, required_new_customers_for_gap,
+
+    // NDR/TTFV outputs
+    expected_wins, newMRPU, MRPU,
+    annual_retention, required_annual_expansion_frac, expansionARR_required, required_monthly_expansion, required_expansion_per_existing_customer_monthly,
+    // NEW fields
+    required_expansion_per_new_customer_monthly: required_expansion_per_new_customer_monthly,
+    opportunity_beyond_cloud_resale_annual: opportunity_beyond_cloud_resale_annual,
+    opportunity_beyond_cloud_resale_per_new_customer_annual: opportunity_beyond_cloud_resale_per_new_customer_annual,
+
+    // gap to target
+    gap_to_target,
+
+    churn_used, win_rate_used, apply_ndr,
+    explicit_new_customers_target
+  };
+}
+
+/* ---------- Visualizations & helpers ---------- */
+
+/* churn/expansion heatmap (unchanged) */
+function churnExpansionHeatmapPct(p, core){
+  const minC = safeFloat(p.churn_heatmap_min,0.0);
+  const maxC = safeFloat(p.churn_heatmap_max,0.05);
+  const minE = safeFloat(p.expansion_heatmap_min,0.0);
+  const maxE = safeFloat(p.expansion_heatmap_max,0.4);
+  const gridSize = Math.max(7, Math.round(safeFloat(p.sensitivity_grid_size,31)));
+  const cVec=[], eVec=[];
+  for(let i=0;i<gridSize;i++){ cVec.push(minC + (maxC-minC)*(i/(gridSize-1))); eVec.push(minE + (maxE-minE)*(i/(gridSize-1))); }
+  const z=[]; // percent difference vs target
+  const target = safeFloat(p.target_arr_2026, 6500000);
+  for(let j=0;j<gridSize;j++){
+    const row=[];
+    for(let i=0;i<gridSize;i++){
+      const churnMonthly = cVec[i];
+      const expansionFactor = eVec[j];
+      const annual_ret = Math.pow(1-churnMonthly,12);
+      const presentARR = safeFloat(p.exit_arr_2025);
+      const lost = presentARR * (1 - annual_ret);
+      const expected_wins = Math.max(0, Math.floor(safeFloat(p.ICP) * safeFloat(p.reach_rate) * safeFloat(p.meeting_rate) * safeFloat(p.win_rate)));
+      const denom = expected_wins>0 ? expected_wins : Math.max(1, Math.round(safeFloat(p.ICP)));
+      const newMRPU_local = (safeFloat(p.target_arr_2026) - safeFloat(p.exit_arr_2025)) / (12 * denom);
+      const ACV_new = newMRPU_local * Math.max(1, Math.round(p.contract_length_months));
+      const new_customers = Math.round( safeFloat(p.ICP) * safeFloat(p.reach_rate) * safeFloat(p.meeting_rate) * safeFloat(p.win_rate) );
+      const newARR = new_customers * ACV_new;
+      const expansionARR = newARR * expansionFactor;
+      const totalARR = presentARR - lost + newARR + expansionARR;
+      const pct = target>0 ? (totalARR / target - 1) * 100 : 0;
+      row.push(pct);
+    }
+    z.push(row);
+  }
+  return {cVec,eVec,z};
+}
+
+/* scenario heatmap unchanged */
+function scenarioHeatmapManagedCrossSell(p, core){
+  const gridSize = Math.max(7, Math.round(safeFloat(p.sensitivity_grid_size,31)));
+  const minU = safeFloat(p.managed_upsell_min,0.0), maxU = safeFloat(p.managed_upsell_max,0.10);
+  const minX = safeFloat(p.cross_sell_min,0.0), maxX = safeFloat(p.cross_sell_max,0.10);
+  const uVec = [], xVec = [];
+  for(let i=0;i<gridSize;i++){ uVec.push(minU + (maxU-minU)*(i/(gridSize-1))); xVec.push(minX + (maxX-minX)*(i/(gridSize-1))); }
+  const z = []; const baseTotal = core.totalARR_2026;
+  for(let j=0;j<gridSize;j++){
+    const row=[];
+    for(let i=0;i<gridSize;i++){
+      const upsell_pct = uVec[i];
+      const cross_pct = xVec[j];
+      const add_from_managed_upsell = core.managed_rev * upsell_pct;
+      const cross_customers = Math.round(core.present_customers * cross_pct);
+      const cross_arr = cross_customers * core.ACV_new;
+      const new_total = baseTotal + add_from_managed_upsell + cross_arr;
+      const pct_delta = baseTotal>0 ? (new_total / baseTotal - 1) * 100 : 0;
+      row.push(pct_delta);
+    }
+    z.push(row);
+  }
+  return {uVec,xVec,z};
+}
+
+/* Monte Carlo for gap (unchanged) */
+function monteCarloGap(p, core){
+  const iters = Math.max(100, Math.round(safeFloat(p.mc_iterations,5000)));
+  const n = Math.max(1, core.required_new_customers_for_gap || 1);
+  const mean = safeFloat(p.median_spend,9000);
+  const maxOut = Math.max(mean, safeFloat(p.outlier_max_spend,50000));
+  const sd = (maxOut - mean) / 1.645;
+  const results = [];
+  let countHit=0;
+  const gapAnnual = safeFloat(p.gap_target_amount, core.gapARR || 0);
+  for(let it=0; it<iters; it++){
+    let sum=0;
+    for(let i=0;i<n;i++){
+      const u1=Math.random(), u2=Math.random();
+      const z = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+      let val = mean + sd*z;
+      if(val < 0) val = 0;
+      if(val > maxOut) val = maxOut;
+      sum += val;
+    }
+    results.push(sum);
+    if(sum >= gapAnnual) countHit++;
+  }
+  const prob = countHit / iters;
+  // histogram
+  const bins = 40;
+  const minR = Math.min(...results), maxR = Math.max(...results);
+  const binW = (maxR - minR) / bins;
+  const hist = new Array(bins).fill(0);
+  for(const v of results){
+    const idx = Math.min(bins-1, Math.floor((v - minR)/Math.max(1e-9, binW)));
+    hist[idx]++;
+  }
+  const binEdges = []; for(let b=0;b<bins;b++) binEdges.push(minR + b*binW);
+  const meanSum = results.reduce((a,b)=>a+b,0)/results.length;
+  const variance = results.reduce((a,b)=>a + Math.pow(b-meanSum,2),0)/results.length;
+  const sdSum = Math.sqrt(variance);
+  return {results,prob,hist,binEdges,mean:meanSum,sd:sdSum,minR,maxR,sdPerAccount:sd};
+}
+
+/* customer population (unchanged) */
+function generateCustomerPopulation(p){
+  const n = Math.max(1, Math.round(safeFloat(p.customers_present,54)));
+  const primary_mean = safeFloat(p.pop_mean_primary,6000);
+  const primary_sd = Math.max(1, safeFloat(p.pop_sd_primary,2000));
+  const primary_frac = Math.min(1, Math.max(0, safeFloat(p.pop_frac_primary,0.7)));
+  const secondary_mean = safeFloat(p.pop_mean_secondary,12000);
+  const secondary_sd = Math.max(1, Math.round(safeFloat(p.pop_sd_secondary,3000)));
+  const secondary_frac = Math.min(1, Math.max(0, safeFloat(p.pop_frac_secondary,0.25)));
+  const outlier_frac = Math.min(1, Math.max(0, safeFloat(p.pop_frac_outlier,0.05)));
+  const out_min = safeFloat(p.outlier_min,30000);
+  const out_max = safeFloat(p.outlier_max,45000);
+  const arr = [];
+  for(let i=0;i<n;i++){
+    const r = Math.random();
+    if(r < outlier_frac){
+      arr.push(out_min + Math.random()*(out_max - out_min));
+    } else if(r < outlier_frac + secondary_frac){
+      const u1=Math.random(), u2=Math.random(); const z = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+      arr.push(Math.max(0, secondary_mean + secondary_sd*z));
+    } else {
+      const u1=Math.random(), u2=Math.random(); const z = Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+      arr.push(Math.max(0, primary_mean + primary_sd*z));
+    }
+  }
+  arr.sort((a,b)=>a-b);
+  const sum = arr.reduce((a,b)=>a+b,0);
+  const mean = sum/arr.length;
+  const median = arr.length%2===1 ? arr[(arr.length-1)/2] : (arr[arr.length/2-1]+arr[arr.length/2])/2;
+  const p90 = arr[Math.floor(0.9*arr.length)] || arr[arr.length-1];
+  const p10 = arr[Math.floor(0.1*arr.length)];
+  return {arr,mean,median,p10,p90};
+}
+
+/* ---------- Render functions (KPIs + charts) ---------- */
+function formatEuro(x){ if(!isFinite(x)) return "—"; return "€"+Math.round(x).toLocaleString(); }
+
+function renderKPIs(core, p, pop){
+  const kdiv=document.getElementById("kpi_area"); kdiv.innerHTML="";
+  const items=[
+    ["Exit ARR 2025", formatEuro(core.exitARR2025)],
+    ["Exit MRR 2025 (monthly)", formatEuro(core.exitMRR2025)],
+    ["Target ARR 2026", formatEuro(core.targetARR2026)],
+    ["Target MRR 2026 (monthly)", formatEuro(core.targetMRR2026)],
+    ["Gap ARR (annual)", formatEuro(core.gapARR)],
+    ["Required new customers for gap (MRPU new)", core.required_new_customers_for_gap],
+    ["New customers (from ICP)", core.sales_new_customers],
+    ["Expected wins (funnel-aware)", core.expected_wins !== undefined ? core.expected_wins : "—"],
+    ["CAC (base)", formatEuro(core.base_cac)],
+    ["CAC (time-adjusted)", formatEuro(core.time_adj)],
+    ["CAC (velocity-adjusted)", formatEuro(core.velocity_adj)],
+    ["Monthly GP / cust (today MRPU)", formatEuro(core.monthly_gp_per_customer_today)],
+    ["Monthly GP / cust (new MRPU)", formatEuro(core.monthly_gp_per_customer_new)],
+    ["LTV (today, total lifetime)", formatEuro(core.LTV_today)],
+    ["LTV (new, total lifetime)", formatEuro(core.LTV_new)],
+    ["LTV/CAC (new)", isFinite(core.LTV_to_CAC_new)? core.LTV_to_CAC_new.toFixed(2):"N/A"],
+    ["Payback (months) — new cust", isFinite(core.payback_months)? core.payback_months.toFixed(1):"N/A"],
+    ["NDR target", (safeFloat(p.ndr_target,1.1)*100).toFixed(1) + "%"],
+    ["Annual retention (adj)", (core.annual_retention*100).toFixed(2) + "%"],
+    ["Required annual expansion (EUR)", formatEuro(core.expansionARR_required)],
+    ["Required monthly expansion (EUR)", formatEuro(core.required_monthly_expansion)],
+    ["Required expansion / existing cust / month", isFinite(core.required_expansion_per_existing_customer_monthly) ? formatEuro(core.required_expansion_per_existing_customer_monthly) : "—"],
+    ["Required expansion / NEW cust / month", isFinite(core.required_expansion_per_new_customer_monthly) ? formatEuro(core.required_expansion_per_new_customer_monthly) : "—"],
+    ["Opportunity beyond cloud resale (annual)", formatEuro(core.opportunity_beyond_cloud_resale_annual)],
+    ["Opportunity per NEW cust (annual)", isFinite(core.opportunity_beyond_cloud_resale_per_new_customer_annual) ? formatEuro(core.opportunity_beyond_cloud_resale_per_new_customer_annual) : "—"],
+    ["Gap to target (AFTER model) (annual)", formatEuro(core.gap_to_target)],
+    ["TTFV target (days)", p.ttfv_target_days],
+    ["Actual TTFV (days)", p.actual_ttfv_days],
+    ["Win rate (adj)", (core.win_rate_used*100).toFixed(2)+"%"],
+    ["Churn (adj)", (core.churn_used*100).toFixed(2)+"%"]
+  ];
+  items.forEach(([label,val])=>{
+    const c=document.createElement("div"); c.className="kpi-card";
+    c.innerHTML=`<div class="muted">${label}</div><div class="big">${val}</div>`;
+    kdiv.appendChild(c);
+  });
+  const popDiv = document.createElement("div"); popDiv.style.marginTop="8px";
+  popDiv.innerHTML = `<div class="muted">Customer MRPU population — n=${p.customers_present}</div>
+    <div>Mean: <strong>${Math.round(pop.mean).toLocaleString()}</strong>, Median: <strong>${Math.round(pop.median).toLocaleString()}</strong>, P10: <strong>${Math.round(pop.p10).toLocaleString()}</strong>, P90: <strong>${Math.round(pop.p90).toLocaleString()}</strong></div>`;
+  kdiv.appendChild(popDiv);
+}
+
+/* Revenue breakdown — third bar renamed "target from VAS" and green */
+function renderRevenueBreakdown(core, p){
+  const target_from_vas = core.expansionARR_required || 0;
+  const data=[
+    { x:["Infra"], y:[core.infra_rev], type:"bar", name:"Infra", marker:{color:"#1f77b4", line:{width:1, color:'#333'}}, hovertemplate:"Infra<br>Revenue: €%{y:,}<extra></extra>" },
+    { x:["Managed"], y:[core.managed_rev], type:"bar", name:"Managed", marker:{color:"#6baed6", line:{width:1, color:'#333'}}, hovertemplate:"Managed<br>Revenue: €%{y:,}<extra></extra>" },
+    { x:["Target from VAS"], y:[target_from_vas], type:"bar", name:"Target from VAS", marker:{color:"#2ca02c", line:{width:1, color:'#333'}}, hovertemplate:"Target from VAS<br>Revenue: €%{y:,}<extra></extra>" }
+  ];
+  const layout={ xaxis:{title:"Revenue Stream"}, yaxis:{title:"Revenue (EUR)"}, barmode:"group", showlegend:true, legend:{title:{text:"Revenue components"}} };
+  Plotly.react("rev_break", data, layout);
+}
+
+/* GP breakdown — map target_from_vas to GP using vas margin */
+function renderGPBreak(core){
+  const target_from_vas = core.expansionARR_required || 0;
+  let vas_margin_val = safeFloat(DEFAULTS.vas_margin);
+  try { const el = document.getElementById("vas_margin"); if(el && el.value !== "") vas_margin_val = Number(el.value); } catch(e){}
+  if(!isFinite(vas_margin_val) || vas_margin_val<=0) vas_margin_val = safeFloat(DEFAULTS.managed_margin);
+  const gp_target_vas = target_from_vas * vas_margin_val;
+  const data=[
+    { x:["Infra"], y:[core.gp_infra], type:"bar", name:"Infra", marker:{color:"#1f77b4", line:{width:1, color:'#333'}}, hovertemplate:"Infra<br>GP: €%{y:,}<extra></extra>" },
+    { x:["Managed"], y:[core.gp_managed], type:"bar", name:"Managed", marker:{color:"#6baed6", line:{width:1, color:'#333'}}, hovertemplate:"Managed<br>GP: €%{y:,}<extra></extra>" },
+    { x:["Target from VAS"], y:[gp_target_vas], type:"bar", name:"Target from VAS", marker:{color:"#2ca02c", line:{width:1, color:'#333'}}, hovertemplate:"Target from VAS<br>GP: €%{y:,}<extra></extra>" }
+  ];
+  const layout={ xaxis:{title:"Revenue Stream"}, yaxis:{title:"Gross Profit (EUR)"}, barmode:"group", showlegend:true, legend:{title:{text:"Gross profit components"}} };
+  Plotly.react("gp_break", data, layout);
+}
+
+/* VAS miss sensitivity (unchanged) */
+function renderVASSensitivity(core, p){
+  const base_required = core.expansionARR_required || 0;
+  const missPercents = [];
+  for(let m=0; m<=100; m+=5) missPercents.push(m/100.0);
+  const labels = missPercents.map(m => (m*100).toFixed(0) + "% miss");
+  let vas_margin = safeFloat(DEFAULTS.vas_margin);
+  try { const el = document.getElementById("vas_margin"); if(el && el.value !== "") vas_margin = Number(el.value); } catch(e){}
+  if(!isFinite(vas_margin) || vas_margin <= 0) vas_margin = safeFloat(DEFAULTS.managed_margin);
+  const baseline_total_gp = core.total_gp;
+  const baseline_totalARR = core.presentARR + core.newARR_from_sales + base_required;
+  const overallGM = [];
+  const totalGPs = [];
+  const shortfallsEUR = [];
+  const achievedExpansions = [];
+  for(const m of missPercents){
+    const shortfall = base_required * m;
+    const achieved = base_required - shortfall;
+    const scenario_total_gp = baseline_total_gp - (shortfall * vas_margin);
+    const scenario_totalARR = core.presentARR + core.newARR_from_sales + achieved;
+    const scenario_overall_gm = scenario_totalARR>0 ? scenario_total_gp / scenario_totalARR : NaN;
+    overallGM.push(scenario_overall_gm * 100);
+    totalGPs.push(scenario_total_gp);
+    shortfallsEUR.push(shortfall);
+    achievedExpansions.push(achieved);
+  }
+  function colorForPercent(pct){
+    let r,g,b;
+    if(pct <= 0.5){
+      const t = pct / 0.5;
+      const g1=139, r1=34, b1=34;
+      const r2=255, g2=205, b2=0;
+      r = Math.round(r1 + (r2 - r1) * t);
+      g = Math.round(g1 + (g2 - g1) * t);
+      b = Math.round(b1 + (b2 - b1) * t);
+    } else {
+      const t = (pct - 0.5) / 0.5;
+      const r1=255, g1=205, b1=0;
+      const r2=220, g2=20, b2=60;
+      r = Math.round(r1 + (r2 - r1) * t);
+      g = Math.round(g1 + (g2 - g1) * t);
+      b = Math.round(b1 + (b2 - b1) * t);
+    }
+    return `rgb(${r},${g},${b})`;
+  }
+  const colors = missPercents.map(m => colorForPercent(m));
+  const borderColors = missPercents.map(m => m > 0.5 ? '#550000' : '#0b3d06');
+  const trace1 = {
+    x: labels,
+    y: overallGM.map(v => Math.round(v*100)/100),
+    type: "bar",
+    name: "Overall GM (%) vs VAS shortfall",
+    marker: { color: colors, line: { width: 1, color: borderColors } },
+    hovertemplate: "%{x}<br>Overall GM: %{y:.2f}%%<extra></extra>"
+  };
+  const layout1 = { xaxis: { title: "Shortfall scenario", tickangle: -45 }, yaxis: { title: "Overall GM (%)" }, margin: { t: 20, b: 120, l:60, r:20 }, showlegend:true, legend:{title:{text:"Metric"}} };
+  Plotly.react("vas_sensitivity", [trace1], layout1);
+  const trace2 = {
+    x: labels,
+    y: totalGPs.map(v => Math.round(v)),
+    type: "bar",
+    name: "Total GP (EUR) vs VAS shortfall",
+    marker: { color: colors, line: { width: 1, color: borderColors } },
+    hovertemplate: "%{x}<br>Total GP: €%{y:,}<br>Shortfall: €%{customdata[0]:,}<br>Achieved expansion: €%{customdata[1]:,}<extra></extra>",
+    customdata: shortfallsEUR.map((s,i) => [Math.round(s), Math.round(achievedExpansions[i])])
+  };
+  const layout2 = { xaxis: { title: "Shortfall scenario", tickangle: -45 }, yaxis: { title: "Total Gross Profit (EUR)" }, margin: { t: 20, b: 120, l:80, r:20 }, showlegend:true, legend:{title:{text:"Metric"}} };
+  Plotly.react("vas_sensitivity_delta", [trace2], layout2);
+}
+
+/* ---------- TIER MONTE CARLO (METHOD B) ---------- */
+/* monteCarloTierMix returns grid data for heatmap and flattened candidates for recommendations */
+function monteCarloTierMix(p, core, mc_iters_override){
+  // N_new to use for simulation (explicit override or funnel-derived)
+  let N_new = null;
+  if(p.new_customers_target && !isNaN(p.new_customers_target) && p.new_customers_target>0) N_new = Math.round(p.new_customers_target);
+  else N_new = core.sales_new_customers || 0;
+
+  // cap for safety
+  const Ncap = Math.max(1, Math.min(N_new, Math.max(1, safeFloat(p.mc_tier_max_new_customers, 200))));
+  if(N_new > Ncap) {
+    logDebug("Note: new_customers_target (" + N_new + ") capped to " + Ncap + " for Tier-MC grid performance.");
+    N_new = Ncap;
+  }
+
+  const tier1_mean = safeFloat(p.tier1_mean, 30000), tier1_sd = Math.max(0.1, safeFloat(p.tier1_sd, 5000));
+  const tier2_mean = safeFloat(p.tier2_mean, 12500), tier2_sd = Math.max(0.1, safeFloat(p.tier2_sd, 2500));
+  const tier3_mean = safeFloat(p.tier3_mean, 6000), tier3_sd = Math.max(0.1, safeFloat(p.tier3_sd, 2000));
+
+  const step = Math.max(0.01, safeFloat(p.tier_mix_step, 0.05));
+  const mc_iters = (mc_iters_override && mc_iters_override>0) ? mc_iters_override : Math.max(100, Math.round(safeFloat(p.mc_tier_iterations,1500)));
+
+  // required new ARR to hit target (annual)
+  const requiredNewARR = Math.max(0, core.targetARR2026 - core.presentARR - core.expansionARR_required);
+  const requiredMonthlyMRPU = (N_new>0) ? (requiredNewARR / (12 * N_new)) : Infinity;
+
+  // build f1/f2 grid
+  const fVec = [];
+  for(let f=0; f<=1.000001; f+=step) fVec.push(Math.round(f*100000)/100000);
+  const f1Vec = fVec.slice();
+  const f2Vec = fVec.slice();
+  const gridProb = [];
+  const gridMeanARR = [];
+  const gridP90 = [];
+  // flattened candidates for table
+  const candidates = [];
+
+  // helper: draw one normal (Box-Muller)
+  function sampleNormal(mu, sd){
+    const u1 = Math.random(), u2=Math.random();
+    const z = Math.sqrt(-2*Math.log(Math.max(1e-12,u1))) * Math.cos(2*Math.PI*u2);
+    return mu + sd * z;
+  }
+
+  // iterate grid
+  for(let j=0;j<f1Vec.length;j++){
+    const rowProb=[]; const rowMean=[]; const rowP90=[];
+    for(let i=0;i<f2Vec.length;i++){
+      const f1 = f1Vec[i]; const f2 = f2Vec[j];
+      if(f1 + f2 > 1.000001){
+        rowProb.push(NaN); rowMean.push(NaN); rowP90.push(NaN);
+        continue;
+      }
+      const f3 = Math.max(0, 1 - f1 - f2);
+      let successCount=0; const totalARRs=[];
+      for(let it=0; it<mc_iters; it++){
+        // sample N_new customers
+        let newAnnualSum = 0;
+        for(let k=0;k<N_new;k++){
+          const r = Math.random();
+          let tier = 3;
+          if(r < f1) tier = 1;
+          else if(r < f1 + f2) tier = 2;
+          else tier = 3;
+          let sample;
+          if(tier === 1) sample = sampleNormal(tier1_mean, tier1_sd);
+          else if(tier === 2) sample = sampleNormal(tier2_mean, tier2_sd);
+          else sample = sampleNormal(tier3_mean, tier3_sd);
+          if(sample < 0) sample = 0;
+          newAnnualSum += sample * 12;
+        }
+        const totalARRsim = core.presentARR + core.expansionARR_required + newAnnualSum;
+        totalARRs.push(totalARRsim);
+        if(totalARRsim >= core.targetARR2026) successCount++;
+      }
+      const prob = successCount / mc_iters;
+      // compute mean and p90
+      totalARRs.sort((a,b)=>a-b);
+      const meanARR = totalARRs.reduce((a,b)=>a+b,0)/totalARRs.length;
+      const p90 = totalARRs[Math.floor(0.9 * totalARRs.length)];
+      rowProb.push(prob); rowMean.push(meanARR); rowP90.push(p90);
+      candidates.push({f1:f1, f2:f2, f3:f3, prob:prob, meanARR:meanARR, p90:p90, N_new:N_new});
+    }
+    gridProb.push(rowProb); gridMeanARR.push(rowMean); gridP90.push(rowP90);
+  }
+
+  // compute combined ranking metric for candidates (normalize GM)
+  // weighted margin to estimate incremental GM: use revenue splits * margins
+  const infra_share = safeFloat(p.infra_share), managed_share = safeFloat(p.managed_share), vas_share = safeFloat(p.vas_share);
+  const infra_margin = safeFloat(p.infra_margin), managed_margin = safeFloat(p.managed_margin), vas_margin = safeFloat(p.vas_margin);
+  const weighted_margin = (infra_share*infra_margin + managed_share*managed_margin + vas_share*vas_margin);
+
+  // compute overall GM for each candidate (approx): total gp = core.total_gp + incrementalARR * weighted_margin
+  let minGM = Infinity, maxGM = -Infinity;
+  for(const c of candidates){
+    const incARR = Math.max(0, c.meanARR - (core.presentARR + core.expansionARR_required));
+    const gm_total = core.total_gp + incARR * weighted_margin;
+    const gm_ratio = (c.meanARR>0) ? (gm_total / c.meanARR) : 0;
+    c.gm_ratio = gm_ratio;
+    if(gm_ratio < minGM) minGM = gm_ratio;
+    if(gm_ratio > maxGM) maxGM = gm_ratio;
+  }
+  // normalize gm_ratio 0..1
+  for(const c of candidates){
+    c.norm_gm = (isFinite(minGM) && isFinite(maxGM) && (maxGM - minGM) > 1e-9) ? ((c.gm_ratio - minGM) / (maxGM - minGM)) : 0.5;
+  }
+
+  // combined metric: weighted sum (weights from inputs)
+  const w_prob = safeFloat(p.rank_weight_prob, 0.6);
+  const w_gm = safeFloat(p.rank_weight_gm, 0.4);
+  for(const c of candidates){
+    c.combined_metric = w_prob * c.prob + w_gm * c.norm_gm;
+  }
+
+  // sort candidates descending by prob and keep top 12
+  candidates.sort((a,b)=>b.prob - a.prob);
+  const top_by_prob = candidates.slice(0, 12);
+
+  // top by combined metric
+  candidates.sort((a,b)=>b.combined_metric - a.combined_metric);
+  const top_by_combined = candidates.slice(0, 12);
+
+  return { f1Vec, f2Vec, gridProb, gridMeanARR, gridP90, candidates, top_by_prob, top_by_combined, requiredNewARR, requiredMonthlyMRPU, N_new, mc_iters };
+}
+
+/* Render tier heatmap */
+function renderTierHeatmap(res, p, core){
+  const f1 = res.f1Vec, f2 = res.f2Vec;
+  const z = res.gridProb;
+  const layout = {
+    title: "Tier-mix success probability (Tier1% vs Tier2%) — P(success) with N_new = " + res.N_new,
+    xaxis:{title:"Tier1 fraction"}, yaxis:{title:"Tier2 fraction"}
+  };
+  const trace = { z: z, x: f1, y: f2, type:"heatmap", colorscale:"Viridis", colorbar:{title:"P(success)"} };
+  Plotly.react("tier_heatmap", [trace], layout);
+
+  // clickable: when user clicks a cell, show distribution via renderTierDistribution
+  const el = document.getElementById("tier_heatmap");
+  el.on('plotly_click', function(data){
+    try {
+      const px = data.points[0].x, py = data.points[0].y;
+      // find nearest indices
+      let ix = 0, iy = 0;
+      for(let i=0;i<f1.length;i++) if(Math.abs(f1[i]-px) < 1e-6) ix = i;
+      for(let j=0;j<f2.length;j++) if(Math.abs(f2[j]-py) < 1e-6) iy = j;
+      // call single-mix deep dive
+      const f1val = f1[ix], f2val = f2[iy];
+      renderTierDistributionSingleMix(p, core, f1val, f2val);
+    } catch(e){ logDebug("tier_heatmap click error: " + e.message); }
+  });
+}
+
+/* Render contours for multiple N_new values */
+function renderTierContoursForNnew(p, core){
+  const minN = Math.max(1, Math.round(safeFloat(p.tier_N_new_min, 10)));
+  const maxN = Math.max(minN, Math.round(safeFloat(p.tier_N_new_max, Math.max(minN,20))));
+  const stepN = Math.max(1, Math.round(safeFloat(p.tier_N_new_step, 20)));
+  const levels_input = (document.getElementById("tier_contour_levels") && document.getElementById("tier_contour_levels").value) ? document.getElementById("tier_contour_levels").value : DEFAULTS.tier_contour_levels;
+  const levels = levels_input.split(",").map(s=>parseFloat(s)).filter(x=>isFinite(x) && x>0 && x<1);
+  const traces = [];
+  const legend = [];
+  const colors = ["#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#a65628","#f781bf"];
+  let colorIdx = 0;
+
+  const fStep = Math.max(0.01, safeFloat(p.tier_mix_step, 0.05));
+  const fVec = [];
+  for(let f=0; f<=1.000001; f+=fStep) fVec.push(Math.round(f*100000)/100000);
+  const f1Vec = fVec.slice();
+  const f2Vec = fVec.slice();
+
+  // For each N_new value compute grid of probs (coarse mc iterations to trade perf) and then build contour traces
+  const Ns = [];
+  for(let N=minN; N<=maxN; N+=stepN) Ns.push(N);
+  logDebug("Computing contour sweep for N_new values: " + Ns.join(", ") + " | contour levels: " + levels.join(", "));
+  // For each N, run monteCarlo similar to monteCarloTierMix but reusing function code with override
+  for(const N of Ns){
+    // We'll call monteCarloTierMix with N override by temporarily setting new_customers_target in p copy
+    const pcopy = Object.assign({}, p);
+    pcopy.new_customers_target = N;
+    const res = monteCarloTierMix(pcopy, core, Math.max(200, Math.round(safeFloat(p.mc_tier_iterations,1500)/4))); // use fewer iterations per N for speed
+    // produce contour traces for requested levels
+    for(const lev of levels){
+      const trace = {
+        z: res.gridProb,
+        x: res.f1Vec,
+        y: res.f2Vec,
+        type: 'contour',
+        contours: { coloring: 'lines', showlabels: true, labelfont: { size: 10, color: 'white' }, start: lev, end: lev, size: 0.000001 },
+        line: { width: 2, color: colors[colorIdx % colors.length] },
+        name: 'N_new=' + N + ' P=' + (lev*100).toFixed(0) + '%',
+        showscale: false,
+        opacity: 0.9
+      };
+      traces.push(trace);
+      colorIdx++;
+    }
+  }
+
+  const layout = { title: "Contours: P(success) levels for differing N_new (overlay)", xaxis:{title:"Tier1 fraction"}, yaxis:{title:"Tier2 fraction"}, showlegend:true, height:500 };
+  Plotly.react("tier_contours", traces, layout);
+}
+
+/* Render top recommendation table */
+function renderTierRecommendations(res, p, core){
+  const div = document.getElementById("tier_rec_table");
+  let html = "<h3>Top recommended Tier mixes</h3>";
+  // top by probability
+  html += "<h4>Top by P(success)</h4>";
+  html += "<table><thead><tr><th>Rank</th><th>Tier1%</th><th>Tier2%</th><th>Tier3%</th><th>P(success)</th><th>Mean ARR (EUR)</th><th>p90 ARR (EUR)</th></tr></thead><tbody>";
+  res.top_by_prob.forEach((c, idx)=>{
+    html += "<tr data-type='prob' data-idx='"+idx+"' style='cursor:pointer'><td>" + (idx+1) + "</td><td>" + Math.round(c.f1*100) + "%</td><td>" + Math.round(c.f2*100) + "%</td><td>" + Math.round(c.f3*100) + "%</td><td>" + (c.prob*100).toFixed(1) + "%</td><td>€" + Math.round(c.meanARR).toLocaleString() + "</td><td>€" + Math.round(c.p90).toLocaleString() + "</td></tr>";
+  });
+  html += "</tbody></table>";
+
+  // top by combined metric
+  html += "<h4>Top by combined metric (prob * w + normalized GM * w)</h4>";
+  html += "<table><thead><tr><th>Rank</th><th>Tier1%</th><th>Tier2%</th><th>Tier3%</th><th>P(success)</th><th>Norm GM</th><th>Combined score</th><th>Mean ARR (EUR)</th></tr></thead><tbody>";
+  res.top_by_combined.forEach((c, idx)=>{
+    html += "<tr data-type='combined' data-idx='"+idx+"' style='cursor:pointer'><td>" + (idx+1) + "</td><td>" + Math.round(c.f1*100) + "%</td><td>" + Math.round(c.f2*100) + "%</td><td>" + Math.round(c.f3*100) + "%</td><td>" + (c.prob*100).toFixed(1) + "%</td><td>" + (c.norm_gm).toFixed(3) + "</td><td>" + (c.combined_metric).toFixed(3) + "</td><td>€" + Math.round(c.meanARR).toLocaleString() + "</td></tr>";
+  });
+  html += "</tbody></table>";
+  html += "<div class='small-muted'>Click a row to see the ARR distribution for that mix. Use the combined metric to balance probability vs margin.</div>";
+  div.innerHTML = html;
+
+  // wire clicks
+  const rows = div.querySelectorAll("tbody tr");
+  rows.forEach((r, idx)=>{ r.addEventListener("click", ()=>{
+      const t = r.getAttribute("data-type");
+      const i = parseInt(r.getAttribute("data-idx"));
+      const candidate = (t === 'prob') ? res.top_by_prob[i] : res.top_by_combined[i];
+      renderTierDistributionSingleMix(p, core, candidate.f1, candidate.f2);
+  }); });
+}
+
+/* render distribution for a single mix (deep dive, uses mc_single_mix_iterations) */
+function renderTierDistributionSingleMix(p, core, f1, f2){
+  const f3 = Math.max(0, 1 - f1 - f2);
+  const tier1_mean = safeFloat(p.tier1_mean, 30000), tier1_sd = Math.max(0.1, safeFloat(p.tier1_sd, 5000));
+  const tier2_mean = safeFloat(p.tier2_mean, 12500), tier2_sd = Math.max(0.1, safeFloat(p.tier2_sd, 2500));
+  const tier3_mean = safeFloat(p.tier3_mean, 6000), tier3_sd = Math.max(0.1, safeFloat(p.tier3_sd, 2000));
+  let N_new = null;
+  if(p.new_customers_target && !isNaN(p.new_customers_target) && p.new_customers_target>0) N_new = Math.round(p.new_customers_target);
+  else N_new = core.sales_new_customers || 0;
+  const mc_iters = Math.max(100, Math.round(safeFloat(p.mc_single_mix_iterations, 4000)));
+  logDebug("Running single-mix MC: N_new=" + N_new + ", f1=" + f1 + ", f2=" + f2 + ", f3=" + f3 + ", iter=" + mc_iters);
+  // sampler
+  function sampleNormal(mu, sd){
+    const u1 = Math.random(), u2 = Math.random();
+    const z = Math.sqrt(-2*Math.log(Math.max(1e-12,u1))) * Math.cos(2*Math.PI*u2);
+    return mu + sd * z;
+  }
+  const totalARRs = [];
+  for(let it=0; it<mc_iters; it++){
+    let newAnnualSum = 0;
+    for(let k=0;k<N_new;k++){
+      const r = Math.random();
+      let sample;
+      if(r < f1) sample = sampleNormal(tier1_mean, tier1_sd);
+      else if(r < f1 + f2) sample = sampleNormal(tier2_mean, tier2_sd);
+      else sample = sampleNormal(tier3_mean, tier3_sd);
+      if(sample < 0) sample = 0;
+      newAnnualSum += sample * 12;
+    }
+    const totalARRsim = core.presentARR + core.expansionARR_required + newAnnualSum;
+    totalARRs.push(totalARRsim);
+  }
+  // store samples in element state for export
+  const stateKey = 'lastTierSamples';
+  window[stateKey] = totalARRs.slice();
+
+  // stats
+  totalARRs.sort((a,b)=>a-b);
+  const meanARR = totalARRs.reduce((a,b)=>a+b,0)/totalARRs.length;
+  const p10 = totalARRs[Math.floor(0.10 * totalARRs.length)];
+  const p50 = totalARRs[Math.floor(0.50 * totalARRs.length)];
+  const p90 = totalARRs[Math.floor(0.90 * totalARRs.length)];
+  const pSuccess = totalARRs.filter(v=>v>=core.targetARR2026).length / totalARRs.length;
+
+  // histogram
+  const bins = 40;
+  const minV = Math.min(...totalARRs), maxV = Math.max(...totalARRs);
+  const binW = (maxV - minV) / bins || 1;
+  const counts = new Array(bins).fill(0);
+  for(const v of totalARRs){
+    const idx = Math.min(bins-1, Math.floor((v - minV)/Math.max(1e-9, binW)));
+    counts[idx]++;
+  }
+  const binEdges = [];
+  for(let i=0;i<bins;i++) binEdges.push(Math.round(minV + i*binW));
+  const trace = { x: binEdges, y: counts, type:"bar", name:"Simulated total ARR", marker:{color:"rgba(44,160,44,0.7)"} };
+  const layout = { title: "Simulated Total ARR distribution — mix T1:"+Math.round(f1*100)+"% T2:"+Math.round(f2*100)+"% T3:"+Math.round(f3*100)+"% (N_new="+N_new+")", xaxis:{title:"Total ARR (EUR)"}, yaxis:{title:"Count"}, margin:{t:50} };
+  Plotly.react("tier_dist", [trace], layout);
+
+  // show summary in insights_area + export buttons
+  const exportDiv = document.createElement("div");
+  exportDiv.style.marginTop = "8px";
+  exportDiv.innerHTML = `<div><strong>Mix:</strong> T1 ${Math.round(f1*100)}% / T2 ${Math.round(f2*100)}% / T3 ${Math.round(f3*100)}% — N_new=${N_new}</div>
+    <div><strong>Mean total ARR:</strong> €${Math.round(meanARR).toLocaleString()} — p10: €${Math.round(p10).toLocaleString()} — p50: €${Math.round(p50).toLocaleString()} — p90: €${Math.round(p90).toLocaleString()}</div>
+    <div><strong>Probability to reach target (€${Math.round(core.targetARR2026).toLocaleString()}):</strong> ${(pSuccess*100).toFixed(2)}%</div>
+    <div style="margin-top:8px">
+      <button class="download-btn" id="download_csv">Download samples (CSV)</button>
+      <button class="download-btn" id="download_json">Download samples (JSON)</button>
+    </div>`;
+  document.getElementById("insights_area").innerHTML = "";
+  document.getElementById("insights_area").appendChild(exportDiv);
+
+  // wire downloads
+  document.getElementById("download_csv").addEventListener("click", ()=>{
+    const arr = window[stateKey] || [];
+    const header = "totalARR\n";
+    const csv = header + arr.map(v=>Math.round(v)).join("\n");
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "tier_totalARR_samples.csv"; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  });
+  document.getElementById("download_json").addEventListener("click", ()=>{
+    const arr = window[stateKey] || [];
+    const blob = new Blob([JSON.stringify(arr)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "tier_totalARR_samples.json"; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  });
+}
+
+/* CAC, sensitivity, payback, churn heatmap etc — reuse earlier functions (slightly trimmed) */
+function renderCACvsLTC(p, core){
+  const ltc = Array.from({length:13},(_,i)=>i);
+  const base = core.base_cac; const lvr = safeFloat(p.LVR_monthly,0.05);
+  const timeAdjusted = ltc.map(m => base * (1 + m/12));
+  const velocityAdjusted = timeAdjusted.map(t => t / (1 + lvr));
+  const data=[
+    { x:ltc, y:timeAdjusted, mode:"lines+markers", name:"Time-adjusted CAC" },
+    { x:ltc, y:velocityAdjusted, mode:"lines+markers", name:"Velocity-adjusted CAC" },
+    { x:[p.sales_cycle_months], y:[core.time_adj], mode:"markers", marker:{size:12}, name:"Current time-adj CAC" }
+  ];
+  const layout={ xaxis:{title:"Sales cycle (months)"}, yaxis:{title:"CAC (EUR)"}, showlegend:true, legend:{title:{text:"CAC variants"}} };
+  Plotly.react("cac_ltc", data, layout);
+}
+
+function renderSensitivityHeatmap(core, p){
+  const gridSize = Math.max(7, Math.round(safeFloat(p.sensitivity_grid_size,31)));
+  const infraBase = safeFloat(p.infra_margin);
+  const manBase = safeFloat(p.managed_margin);
+  const infraMin = Math.max(0, infraBase - 0.3), infraMax = infraBase + 0.3;
+  const manMin = Math.max(0, manBase - 0.3), manMax = manBase + 0.3;
+  const infraVec=[], manVec=[];
+  for(let i=0;i<gridSize;i++){ infraVec.push(infraMin + (infraMax-infraMin)*(i/(gridSize-1))); manVec.push(manMin + (manMax-manMin)*(i/(gridSize-1))); }
+  const z=[];
+  for(let j=0;j<gridSize;j++){
+    const row=[];
+    for(let i=0;i<gridSize;i++){
+      const infra_m = infraVec[j];
+      const man_m = manVec[i];
+      const gp_infra = core.infra_rev * infra_m;
+      const gp_man = core.managed_rev * man_m;
+      const gp_vas = core.vas_rev * safeFloat(p.vas_margin);
+      const total_gp = gp_infra + gp_man + gp_vas;
+      const overall = core.totalARR_2026>0 ? total_gp/core.totalARR_2026 : 0;
+      row.push(overall);
+    }
+    z.push(row);
+  }
+  const layout = { xaxis:{title:"Managed margin (decimal)"}, yaxis:{title:"Infra margin (decimal)"} };
+  Plotly.react("sensitivity_heatmap", [{ z:z, x:manVec, y:infraVec, type:"heatmap", colorbar:{title:"Overall GM (decimal)"} }], layout);
+}
+
+function renderScenarioDeltaHeatmap(core, p){
+  const sc = scenarioHeatmapManagedCrossSell(p, core);
+  const layout = { xaxis:{title:"Managed upsell % (decimal)"}, yaxis:{title:"Cross-sell adoption % (decimal)"} };
+  Plotly.react("scenario_delta_heatmap", [{ z: sc.z, x: sc.uVec, y: sc.xVec, type:"heatmap", colorbar:{title:"% delta vs baseline"} }], layout);
+}
+
+function renderPaybackVsGM(sg, p, core){
+  const xs=[], ys=[];
+  for(let j=0;j<sg.grid.length;j++){
+    for(let i=0;i<sg.grid[0].length;i++){
+      const gm = sg.grid[j][i];
+      const pb = sg.paybackGrid[j][i];
+      if(!isFinite(pb) || !isFinite(gm)) continue;
+      xs.push(Math.round(gm*10000)/100);
+      ys.push(pb);
+    }
+  }
+  const presentGMpct = safeFloat(p.present_total_gm)*100;
+  const monthly_gp_present = p.today_MRPU * safeFloat(p.present_total_gm);
+  const present_payback = monthly_gp_present>0 ? core.velocity_adj / monthly_gp_present : NaN;
+  const futureGMpct = Math.round(core.overall_gm_2026*10000)/100;
+  const futurePB = core.payback_months;
+  const data = [
+    { x: xs, y: ys, mode:"markers", type:"scatter", marker:{size:6,opacity:0.6}, name:"Grid points" },
+    { x:[presentGMpct], y:[present_payback], mode:"markers+text", marker:{size:12}, text:["Present"], textposition:"top center", name:"Present" },
+    { x:[futureGMpct], y:[futurePB], mode:"markers+text", marker:{size:12}, text:["Projected 2026"], textposition:"top center", name:"Projected 2026" }
+  ];
+  const layout = { xaxis:{title:"Overall GM (%)"}, yaxis:{title:"Payback (months)"}, showlegend:true, legend:{title:{text:"Scenarios"}} };
+  Plotly.react("payback_vs_gm", data, layout);
+}
+
+function renderChurnARRHeatmap(p, core){
+  const heat = churnExpansionHeatmapPct(p, core);
+  const flat = heat.z.flat();
+  const minZ = Math.min(...flat), maxZ = Math.max(...flat);
+  const absMax = Math.max(Math.abs(minZ), Math.abs(maxZ));
+  const layout={ xaxis:{title:"Monthly churn rate (decimal)"}, yaxis:{title:"Expansion factor (annual)"}, showlegend:true, legend:{title:{text:"Markers"}} };
+  const trace = { z: heat.z, x: heat.cVec, y: heat.eVec, type: "heatmap", colorscale: "RdBu", zmid: 0, zmin: -absMax, zmax: absMax, colorbar: { title: "% vs Target ARR", ticksuffix: "%" } };
+  Plotly.react("churn_arr_heatmap", [trace], layout).then(()=>{
+    const present_churn = safeFloat(p.churn_rate), present_exp = safeFloat(p.expansion_rate);
+    const projected_churn = core.churn_used, projected_exp = core.expansionARR / Math.max(1, core.newARR_from_sales || 1);
+    Plotly.addTraces("churn_arr_heatmap", [
+      { x:[present_churn], y:[present_exp], mode:"markers", marker:{size:10}, name:"Present (2025)" },
+      { x:[projected_churn], y:[projected_exp], mode:"markers", marker:{size:10}, name:"Projected (2026)" }
+    ]);
+  });
+}
+
+function renderMonteCarlo(p, core){
+  const mc = monteCarloGap(p, core);
+  Plotly.react("mc_gap_hist", [{ x: mc.binEdges, y: mc.hist, type:"bar", name:"Sum distribution" }], { xaxis:{title:"Monte Carlo sample"}, yaxis:{title:"Count"}, showlegend:true, legend:{title:{text:"Histogram"}} });
+  logDebug("Monte Carlo: mean=" + Math.round(mc.mean) + ", sd=" + Math.round(mc.sd) + ", prob>=gap=" + (mc.prob*100).toFixed(2) + "%");
+}
+
+function renderFunnel(core, p){
+  const ICP = safeFloat(p.ICP);
+  const SQL = ICP * safeFloat(p.reach_rate);
+  const Meetings = SQL * safeFloat(p.meeting_rate);
+  const Wins = core.sales_new_customers;
+  Plotly.react("funnel", [{ type:"funnel", y:["ICP","SQL","Meetings","Wins"], x:[ICP,SQL,Meetings,Wins], textinfo:"value+percent initial", name:"Sales funnel" }], { showlegend:true, legend:{title:{text:"Funnel"}} });
+}
+
+function renderPopulation(pop, core, p){
+  const bins = 20;
+  const arr = pop.arr;
+  const minV = Math.min(...arr), maxV = Math.max(...arr);
+  const binW = (maxV - minV) / bins;
+  const counts = new Array(bins).fill(0);
+  for(const v of arr){
+    const idx = Math.min(bins-1, Math.floor((v - minV)/Math.max(1e-9, binW)));
+    counts[idx]++;
+  }
+  const binEdges = [];
+  for(let i=0;i<bins;i++) binEdges.push(Math.round(minV + i*binW));
+  const layout = { xaxis:{title:"MRPU (EUR)"}, yaxis:{title:"Customers"}, showlegend:true, legend:{title:{text:"Statistics"}} };
+  const data = [
+    { x: binEdges, y: counts, type:"bar", name:"Customers" },
+    { x:[pop.mean], y:[Math.max(...counts)*0.9], mode:"markers+text", marker:{size:8}, text:["mean"], textposition:"top center", name:"Mean" },
+    { x:[pop.median], y:[Math.max(...counts)*0.7], mode:"markers+text", marker:{size:8}, text:["median"], textposition:"top center", name:"Median" }
+  ];
+  Plotly.react("pop_hist", data, layout);
+}
+
+/* Insights builder */
+function buildInsights(core, p, pop){
+  const insights = [];
+  const gap = core.gapARR;
+  const projected = core.totalARR_2026;
+  const closedPct = gap>0 ? Math.max(0, (projected - core.exitARR2025) / gap) * 100 : 0;
+  insights.push(`<strong>Gap closure by current plan:</strong> ${closedPct.toFixed(1)}% of the €${Math.round(gap).toLocaleString()} gap.`);
+  const expected_wins = core.expected_wins || Math.round(safeFloat(p.ICP));
+  const required_avg_mrpu = gap / (12 * Math.max(1, expected_wins));
+  insights.push(`<strong>Required avg new MRPU (given expected wins=${expected_wins}):</strong> ${formatEuro(required_avg_mrpu)} / month.`);
+  const customers_needed = Math.ceil( gap / (12 * core.newMRPU) );
+  insights.push(`<strong>Customers needed at current funnel-aware new MRPU (${formatEuro(core.newMRPU)}):</strong> ${customers_needed} customers.`);
+  const ltv_cac_new = core.LTV_to_CAC_new;
+  if(isFinite(ltv_cac_new)) { insights.push(`<strong>LTV/CAC (new):</strong> ${ltv_cac_new.toFixed(2)} — target usually > 3.`); } else { insights.push(`<strong>LTV/CAC (new):</strong> N/A.`); }
+  insights.push(`<strong>NDR target:</strong> ${(safeFloat(p.ndr_target,1.1)*100).toFixed(1)}%`);
+  insights.push(`<strong>Annual retention (adj):</strong> ${(core.annual_retention*100).toFixed(2)}%`);
+  insights.push(`<strong>Required annual expansion (EUR):</strong> ${formatEuro(core.expansionARR_required)} (or ${formatEuro(core.required_monthly_expansion)} / month)`);
+  insights.push(`<strong>Opportunity beyond cloud resale (annual):</strong> ${formatEuro(core.opportunity_beyond_cloud_resale_annual)} — this is the expansion ARR required to hit NDR 110%.`);
+  if(core.sales_new_customers>0){
+    insights.push(`<strong>Required expansion per NEW customer (monthly):</strong> ${formatEuro(core.required_expansion_per_new_customer_monthly)} (annual ${formatEuro(core.opportunity_beyond_cloud_resale_per_new_customer_annual)})`);
+    insights.push(`<strong>Suggested levers:</strong> make managed-service attach & upsell a target per new customer, invest in TTFV reduction, and prioritize high MRPU accounts.`);
+  } else {
+    insights.push(`<strong>Required expansion per NEW customer (monthly):</strong> N/A (no expected new customers).`);
+  }
+  insights.push(`<strong>Note:</strong> the third bar in the Revenue & GP charts is labeled <em>target from VAS</em>. GP shown for that bar uses the 'vas_margin' input as an assumption (fallback: managed_margin).`);
+  insights.push(`<strong>TTFV:</strong> target ${p.ttfv_target_days}d, actual ${p.actual_ttfv_days}d.`);
+  document.getElementById("insights_area").innerHTML = insights.map(s=>`<div style="margin-bottom:6px">${s}</div>`).join("");
+}
+
+/* Orchestrator */
+function readInputs(){
+  const p={};
+  for(const k in DEFAULTS){
+    const el = document.getElementById(k);
+    p[k] = el ? (el.value === "" ? DEFAULTS[k] : (el.type === "number" ? Number(el.value) : el.value)) : DEFAULTS[k];
+  }
+  const t = document.getElementById("target_new_customers");
+  p.target_new_customers = t ? (t.value === "" ? null : Number(t.value)) : null;
+  const nc = document.getElementById("new_customers_target");
+  p.new_customers_target = nc ? (nc.value === "" ? null : Number(nc.value)) : null;
+  return p;
+}
+
+function updateAll(){
+  try {
+    logDebug("Updating model & visuals...");
+    const p = readInputs();
+    const core = computeCore(p);
+    const pop = generateCustomerPopulation(p);
+
+    renderKPIs(core, p, pop);
+    renderRevenueBreakdown(core, p);
+    renderGPBreak(core);
+    renderCACvsLTC(p, core);
+    renderSensitivityHeatmap(core, p);
+    renderScenarioDeltaHeatmap(core, p);
+    renderVASSensitivity(core, p);
+
+    // Tier Monte Carlo (Method B)
+    const tierRes = monteCarloTierMix(p, core);
+    renderTierHeatmap(tierRes, p, core);
+    renderTierRecommendations(tierRes, p, core);
+
+    // Render contours for N_new sensitivity
+    renderTierContoursForNnew(p, core);
+
+    // render single-mix distribution for top candidate automatically (by combined metric)
+    const topCand = (tierRes.top_by_combined && tierRes.top_by_combined.length>0) ? tierRes.top_by_combined[0] : null;
+    if(topCand){
+      renderTierDistributionSingleMix(p, core, topCand.f1, topCand.f2);
+    } else {
+      document.getElementById("tier_dist").innerHTML = "<div class='muted'>No tier mixes computed.</div>";
+    }
+
+    const sg = sensitivityGridForPayback(p, core);
+    renderPaybackVsGM(sg, p, core);
+    renderChurnARRHeatmap(p, core);
+    renderMonteCarlo(p, core);
+    renderFunnel(core, p);
+    renderPopulation(pop, core, p);
+    buildInsights(core, p, pop);
+
+    logDebug("Update complete.");
+  } catch (e) {
+    logDebug("updateAll error: " + (e && e.message ? e.message : String(e)) + "\n" + (e && e.stack ? e.stack : ""));
+  }
+}
+
+/* sensitivityGridForPayback (unchanged) */
+function sensitivityGridForPayback(p, core){
+  const gridSize = Math.max(7, Math.round(safeFloat(p.sensitivity_grid_size,31)));
+  const infraBase = safeFloat(p.infra_margin);
+  const manBase = safeFloat(p.managed_margin);
+  const infraMin = Math.max(0, infraBase - 0.3), infraMax = infraBase + 0.3;
+  const manMin = Math.max(0, manBase - 0.3), manMax = manBase + 0.3;
+  const infraVec=[], manVec=[];
+  for(let i=0;i<gridSize;i++){ infraVec.push(infraMin + (infraMax-infraMin)*(i/(gridSize-1))); manVec.push(manMin + (manMax-manMin)*(i/(gridSize-1))); }
+  const grid=[], paybackGrid=[];
+  for(let j=0;j<gridSize;j++){
+    const row=[], pbRow=[];
+    for(let i=0;i<gridSize;i++){
+      const infra_m = infraVec[j];
+      const man_m = manVec[i];
+      const gp_infra = core.infra_rev * infra_m;
+      const gp_man = core.managed_rev * man_m;
+      const gp_vas = core.vas_rev * safeFloat(p.vas_margin);
+      const total_gp = gp_infra + gp_man + gp_vas;
+      const overall = core.totalARR_2026>0 ? total_gp/core.totalARR_2026 : 0;
+      row.push(overall);
+      const monthly_gp_per_customer = safeFloat(p.today_MRPU) * overall;
+      const payback = monthly_gp_per_customer>0 ? core.velocity_adj / monthly_gp_per_customer : NaN;
+      pbRow.push(payback);
+    }
+    grid.push(row); paybackGrid.push(pbRow);
+  }
+  return {grid,paybackGrid,infraVec,manVec};
+}
+
+/* tab wiring */
+document.addEventListener("click", (e) => {
+  if (e.target && e.target.id === "tab_equations_btn") {
+    document.getElementById("tab_equations").classList.add("active");
+    document.getElementById("tab_mc").classList.remove("active");
+  }
+  if (e.target && e.target.id === "tab_mc_btn") {
+    document.getElementById("tab_mc").classList.add("active");
+    document.getElementById("tab_equations").classList.remove("active");
+  }
+});
+
+/* window load wiring */
+window.addEventListener("load", function(){
+  // initial population
+  for(const k in DEFAULTS){ const el = document.getElementById(k); if(el) el.value = DEFAULTS[k]; }
+  // auto-fill MRPU fields from defaults (funnel-aware)
+  const p0 = readInputs();
+  const autoToday = (safeFloat(p0.exit_arr_2025) / (12 * Math.max(1, safeFloat(p0.customers_present))));
+  const expected_wins0 = Math.max(0, Math.floor(safeFloat(p0.ICP) * safeFloat(p0.reach_rate) * safeFloat(p0.meeting_rate) * safeFloat(p0.win_rate)));
+  const denom0 = expected_wins0>0 ? expected_wins0 : Math.max(1, Math.round(safeFloat(p0.ICP)));
+  const autoNew = ((safeFloat(p0.target_arr_2026) - safeFloat(p0.exit_arr_2025)) / (12 * denom0));
+  const elToday = document.getElementById('today_MRPU');
+  const elNew = document.getElementById('new_customer_mrpu');
+  if(elToday) elToday.value = Math.round(autoToday);
+  if(elNew) elNew.value = Math.round(autoNew);
+  document.getElementById("btnUpdate").addEventListener("click", function(){ this.disabled=true; this.textContent="Updating..."; setTimeout(()=>{ updateAll(); this.disabled=false; this.textContent="Update"; }, 60); });
+  document.getElementById("btnReset").addEventListener("click", function(){ for(const k in DEFAULTS){ const el=document.getElementById(k); if(el) el.value = DEFAULTS[k]; } updateAll(); });
+  document.getElementById("tab_equations").classList.add("active");
+  setTimeout(updateAll, 120);
+});
+</script>
+</body>
+</html>
